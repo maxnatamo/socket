@@ -7,7 +7,7 @@ MINOR = -rc1
 LIBS = 
 INCS = -I src/headers/
 
-TARGETS = src/core/sck_main.c
+TARGETS = src/core/*.c
 
 .PHONY: socket
 all: socket
