@@ -4,7 +4,7 @@ NAME = socket
 MAJOR = 0.0.1
 MINOR = -rc1
 
-LIBS = 
+LIBS = -lm
 INCS = -I src/headers/
 
 TARGETS = src/core/*.c

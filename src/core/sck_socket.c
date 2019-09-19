@@ -34,6 +34,7 @@ void sck_socket_listen (sck_connection_t *connection, int max_connections) {
     }
 }
 
+// Blocking function
 void sck_socket_accept (sck_connection_t *connection, sck_http_request_t *request) {
     socklen_t client_len;
     struct sockaddr_in client_addr;
@@ -41,8 +42,6 @@ void sck_socket_accept (sck_connection_t *connection, sck_http_request_t *reques
     client_len      = sizeof(client_addr);
     request->error  = (request->fd = accept(connection->fd, (struct sockaddr *) &client_addr, &client_len));
     request->conn   = connection;
-
-    // Look at eventual address expression? sockaddr->sa_data;
 
     if(request->error == -1) {
         fprintf(stderr, "ERROR: Failed to accept connection.\nError code: %s (%d)\n", strerror(errno), errno);

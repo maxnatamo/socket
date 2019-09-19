@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <sck_core.h>
@@ -25,17 +26,19 @@ int main(int argc, char *argv[])
 
     for(;;) {
         sck_http_request_t *request = malloc(sizeof(sck_http_request_t));
+        request->response = malloc(sizeof(sck_http_request_response_t));
 
         sck_socket_accept(connection, request);
-        printf("Client connected!\n");
 
-        char *http_response = "HTTP/1.1 200 Ok\r\n"
-                              "Content-Length: 8\r\n"
-                              "\r\n"
-                              "OIOIOI\r\n";
+        request->response->httpmajor    = 1;
+        request->response->httpminor    = 1;
+        request->response->statuscode   = 200;
+        request->response->contenttype  = "text/html";
+        request->response->content      = "<html><body><h1>lol</h1></body></html>";
+        request->response->contentlength = strlen(request->response->content);
 
         // Send HTTP response
-        sck_http_write (request, http_response);
+        sck_http_write (request, request->response);
         if(request->error == -1) {
             return 1;
         }
