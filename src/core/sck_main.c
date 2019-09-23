@@ -29,9 +29,10 @@ int main(int argc, char *argv[])
         request->response = malloc(sizeof(sck_http_request_response_t));
 
         sck_socket_accept(connection, request);
+        sck_http_handle_request(connection, request);
 
         request->response->httpmajor    = 1;
-        request->response->httpminor    = 1;
+        request->response->httpminor    = 0;
         request->response->statuscode   = 200;
         request->response->contenttype  = "text/html";
         request->response->content      = "<html><body><h1>lol</h1></body></html>";
@@ -48,6 +49,5 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-
     return 0;
 }

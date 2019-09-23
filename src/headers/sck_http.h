@@ -35,5 +35,7 @@
 #define NGX_HTTP_GATEWAY_TIME_OUT     504
 
 #include <sck_http_request.h>
+#include <sck_http_handler.h>
+#include <sck_http_parser.h>
 
 #endif /* SCK_HTTP_H */

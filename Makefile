@@ -14,3 +14,6 @@ all: socket
 
 socket:
 	${CC} ${TARGETS} ${LIBS} ${INCS} -o ${NAME}
+
+clean:
+	rm -rf ${NAME}

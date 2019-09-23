@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <sck_core.h>
 
 void sck_socket_initialize (sck_connection_t *connection, int listen_address, int port) {
@@ -34,16 +36,16 @@ void sck_socket_listen (sck_connection_t *connection, int max_connections) {
     }
 }
 
-// Blocking function
 void sck_socket_accept (sck_connection_t *connection, sck_http_request_t *request) {
     socklen_t client_len;
     struct sockaddr_in client_addr;
 
-    client_len      = sizeof(client_addr);
-    request->error  = (request->fd = accept(connection->fd, (struct sockaddr *) &client_addr, &client_len));
-    request->conn   = connection;
+    client_len       = sizeof(client_addr);
+    request->error   = (request->fd = accept(connection->fd, (struct sockaddr *) &client_addr, &client_len));
+    request->conn    = connection;
+    request->address = (uint32_t)client_addr.sin_addr.s_addr;
 
-    if(request->error == -1) {
+    if(request->error == -1 || request->fd == -1) {
         fprintf(stderr, "ERROR: Failed to accept connection.\nError code: %s (%d)\n", strerror(errno), errno);
     }
 }

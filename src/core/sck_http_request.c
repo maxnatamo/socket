@@ -6,20 +6,13 @@
 #include <sck_core.h>
 
 void sck_http_write(sck_http_request_t *request, sck_http_request_response_t *response) {
-    /*
-        char *http_response = "HTTP/1.1 200 OK\r\n"
-            "Content-Length: 8\r\n"
-            "\r\n"
-            "OIOIOI\r\n";
-    */
-
     char *baseresponse = "HTTP/%d.%d %d %s\r\nContent-Length: %d\r\nContent-type: %s\r\n\r\n%s\r\n";
     unsigned int entirelength = strlen(baseresponse) - 12;
 
-    entirelength += sck_length_of_int(request->response->httpmajor);
-    entirelength += sck_length_of_int(request->response->httpminor);
-    entirelength += sck_length_of_int(request->response->statuscode);
-    entirelength += sck_length_of_int(request->response->contentlength);
+    entirelength += sck_util_length_of_int(request->response->httpmajor);
+    entirelength += sck_util_length_of_int(request->response->httpminor);
+    entirelength += sck_util_length_of_int(request->response->statuscode);
+    entirelength += sck_util_length_of_int(request->response->contentlength);
     entirelength += strlen(request->response->contenttype);
     entirelength += strlen(request->response->content);
 
