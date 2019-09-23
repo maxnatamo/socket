@@ -5,27 +5,27 @@
 #include <sys/socket.h>
 #include <sck_core.h>
 
-void sck_http_write(sck_http_request_t *request, sck_http_request_response_t *response) {
+void sck_http_write(sck_http_request_t *request, sck_http_response_t *response) {
     char *baseresponse = "HTTP/%d.%d %d %s\r\nContent-Length: %d\r\nContent-type: %s\r\n\r\n%s\r\n";
     unsigned int entirelength = strlen(baseresponse) - 12;
 
-    entirelength += sck_util_length_of_int(request->response->httpmajor);
-    entirelength += sck_util_length_of_int(request->response->httpminor);
-    entirelength += sck_util_length_of_int(request->response->statuscode);
-    entirelength += sck_util_length_of_int(request->response->contentlength);
-    entirelength += strlen(request->response->contenttype);
-    entirelength += strlen(request->response->content);
+    entirelength += sck_util_length_of_int(response->httpmajor);
+    entirelength += sck_util_length_of_int(response->httpminor);
+    entirelength += sck_util_length_of_int(response->statuscode);
+    entirelength += sck_util_length_of_int(response->contentlength);
+    entirelength += strlen(response->contenttype);
+    entirelength += strlen(response->content);
 
     char *formattedstring = malloc(sizeof(char) * entirelength);
     int len = sprintf(
         formattedstring, baseresponse,
-        request->response->httpmajor,
-        request->response->httpminor,
-        request->response->statuscode,
+        response->httpmajor,
+        response->httpminor,
+        response->statuscode,
         "OK",
-        request->response->contentlength,
-        request->response->contenttype,
-        request->response->content
+        response->contentlength,
+        response->contenttype,
+        response->content
     );
 
     if(entirelength != len) {

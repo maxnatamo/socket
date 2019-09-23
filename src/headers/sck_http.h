@@ -1,6 +1,7 @@
 #ifndef SCK_HTTP_H
 #define SCK_HTTP_H
 
+#include <netinet/in.h>
 /*
  *  STATUS CODES
  */
@@ -33,6 +34,13 @@
 #define NGX_HTTP_BAD_GATEWAY          502
 #define NGX_HTTP_SERVICE_UNAVAILABLE  503
 #define NGX_HTTP_GATEWAY_TIME_OUT     504
+
+struct sck_connection_s {
+    int                 fd;
+    unsigned int        port;
+    struct sockaddr_in  addr;
+    int                 error;
+};
 
 #include <sck_http_request.h>
 #include <sck_http_handler.h>
