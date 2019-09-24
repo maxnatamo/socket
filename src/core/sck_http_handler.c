@@ -5,7 +5,7 @@
 #include <errno.h>
 #include <sck_core.h>
 
-void sck_http_handle_request (sck_connection_t *connection, sck_http_request_t *request) {
+void sck_http_handle_request (sck_http_request_t *request) {
     uint16_t increment = 64;
     uint16_t total = increment;
 
@@ -27,6 +27,7 @@ void sck_http_handle_request (sck_connection_t *connection, sck_http_request_t *
         if(n < 0) {
             perror("sck_http_handle_request()");
             fprintf(stderr, "ERROR: An error occured, while receiving data from the client. %s (%d)\n", strerror(errno), errno);
+            break;
         }
 
         // End of request.

@@ -2,7 +2,7 @@
 #define SCK_CORE_H
 
 /* sck_http.h */
-typedef struct sck_connection_s sck_connection_t;
+typedef struct sck_socket_s sck_socket_t;
 
 /* sck_http_request.h */
 typedef struct sck_http_request_line_s sck_http_request_line_t;

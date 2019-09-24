@@ -35,11 +35,14 @@
 #define NGX_HTTP_SERVICE_UNAVAILABLE  503
 #define NGX_HTTP_GATEWAY_TIME_OUT     504
 
-struct sck_connection_s {
+struct sck_socket_s {
     int                 fd;
     unsigned int        port;
     struct sockaddr_in  addr;
     int                 error;
+
+    sck_http_headers_t  *headers_in;
+    sck_http_headers_t  *headers_out;
 };
 
 #include <sck_http_request.h>

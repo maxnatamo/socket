@@ -7,20 +7,20 @@
 
 int main(int argc, char *argv[])
 {
-    sck_connection_t *connection = malloc(sizeof(sck_connection_t));
+    sck_socket_t *socket = malloc(sizeof(sck_socket_t));
 
-    sck_socket_initialize (connection, SCK_SOCKET_ADDR_ANY, 4444);
-    if(connection->error == -1) {
+    sck_socket_initialize (socket, SCK_SOCKET_ADDR_ANY, 4444);
+    if(socket->error == -1) {
         return 1;
     }
 
-    sck_socket_bind (connection);
-    if(connection->error == -1) {
+    sck_socket_bind (socket);
+    if(socket->error == -1) {
         return 1;
     }
 
-    sck_socket_listen (connection, SCK_SOCKET_MAX_CONNECTIONS);
-    if(connection->error == -1) {
+    sck_socket_listen (socket, SCK_SOCKET_MAX_CONNECTIONS);
+    if(socket->error == -1) {
         return 1;
     }
 
@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
         sck_http_request_t *request   = malloc(sizeof(sck_http_request_t));
         sck_http_response_t *response = malloc(sizeof(sck_http_response_t));
 
-        sck_socket_accept(connection, request);
-        sck_http_handle_request(connection, request);
+        sck_socket_accept(socket, request);
+        sck_http_handle_request(request);
 
         response->httpmajor    = 1;
         response->httpminor    = 0;

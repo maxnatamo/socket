@@ -17,7 +17,7 @@ struct sck_http_response_s {
 };
 
 struct sck_http_request_s {
-    sck_connection_t    *conn;          // HTTP parent connection.
+    sck_socket_t        *conn;          // HTTP parent connection.
     int                 fd;             // File descriptor
     int                 error;          // Socket error code. Not to be confused with status code.
     uint32_t            address;        // Request address, stored in a 4-byte hexadecimal value.

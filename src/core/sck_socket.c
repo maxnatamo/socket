@@ -3,46 +3,51 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
-#include <fcntl.h>
+// #include <fcntl.h>
+
 #include <sck_core.h>
 
-void sck_socket_initialize (sck_connection_t *connection, int listen_address, int port) {
-    connection->error  = (connection->fd = socket(AF_INET, SOCK_STREAM, 0));
-    connection->port   = port;
+/*
+ * sck_socket_t renamed to 'sock' as, otherwise,
+ * <sys/socket.h> socket function was unable to be called.
+ */ 
+void sck_socket_initialize (sck_socket_t *sock, int listen_address, int port) {
+    sock->error  = (sock->fd = socket(AF_INET, SOCK_STREAM, 0));
+    sock->port   = port;
 
-    if(connection->error == -1) {
+    if(sock->error == -1) {
         fprintf(stderr, "ERROR: Failed to initialize socket.\nError code: %s (%d)\n", strerror(errno), errno);
         return;
     }
 
-    connection->addr.sin_family        = AF_INET;
-    connection->addr.sin_addr.s_addr   = htonl(listen_address);
-    connection->addr.sin_port          = htons(port);
+    sock->addr.sin_family        = AF_INET;
+    sock->addr.sin_addr.s_addr   = htonl(listen_address);
+    sock->addr.sin_port          = htons(port);
 }
 
-void sck_socket_bind (sck_connection_t *connection) {
-    connection->error = bind(connection->fd, (struct sockaddr *) &(connection->addr), sizeof(connection->addr));
+void sck_socket_bind (sck_socket_t *socket) {
+    socket->error = bind(socket->fd, (struct sockaddr *) &(socket->addr), sizeof(socket->addr));
     
-    if(connection->error == -1) {
+    if(socket->error == -1) {
         fprintf(stderr, "ERROR: Failed to bind socket.\nError code: %s (%d)\n", strerror(errno), errno);
     }
 }
 
-void sck_socket_listen (sck_connection_t *connection, int max_connections) {
-    connection->error = listen(connection->fd, max_connections);
+void sck_socket_listen (sck_socket_t *socket, int max_connections) {
+    socket->error = listen(socket->fd, max_connections);
     
-    if(connection->error == -1) {
+    if(socket->error == -1) {
         fprintf(stderr, "ERROR: Failed to listen to address.\nError code: %s (%d)\n", strerror(errno), errno);
     }
 }
 
-void sck_socket_accept (sck_connection_t *connection, sck_http_request_t *request) {
+void sck_socket_accept (sck_socket_t *socket, sck_http_request_t *request) {
     socklen_t client_len;
     struct sockaddr_in client_addr;
 
     client_len       = sizeof(client_addr);
-    request->error   = (request->fd = accept(connection->fd, (struct sockaddr *) &client_addr, &client_len));
-    request->conn    = connection;
+    request->error   = (request->fd = accept(socket->fd, (struct sockaddr *) &client_addr, &client_len));
+    request->conn    = socket;
     request->address = (uint32_t)client_addr.sin_addr.s_addr;
 
     if(request->error == -1 || request->fd == -1) {
