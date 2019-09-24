@@ -7,9 +7,10 @@
 struct sck_vector_s {
     void        **data;
     uint16_t    size;
+    uint16_t    pointer_size;
 };
 
-sck_vector_t *sck_vector_create ();
+sck_vector_t *sck_vector_create(uint16_t pointer_size);
 void sck_vector_push (sck_vector_t *, void *element);
 void sck_vector_pop  (sck_vector_t * );
 void sck_vector_set  (sck_vector_t *, int index, void *element);

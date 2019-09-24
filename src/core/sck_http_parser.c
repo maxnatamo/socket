@@ -53,7 +53,7 @@ sck_http_headers_t *sck_http_header_parse(char *raw_header) {
     lines->length                    = sck_util_char_amount(raw_header, "\r");
     lines->data                      = malloc(sizeof(char *) * lines->length);
     http_headers->request_line       = sck_http_header_parse_request_line(raw_header);
-    http_headers->single_headers     = sck_vector_create();
+    http_headers->single_headers     = sck_vector_create(sizeof(sck_http_headers_t *));
 
     int i = 0;
     char *pch, head[strlen(raw_header)];
