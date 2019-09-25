@@ -25,8 +25,7 @@ void sck_http_handle_request (sck_http_request_t *request) {
 
         n = recv(request->fd, &d, sizeof(d), 0);
         if(n < 0) {
-            perror("sck_http_handle_request()");
-            fprintf(stderr, "ERROR: An error occured, while receiving data from the client. %s (%d)\n", strerror(errno), errno);
+            sck_log_error("An error occured, while receiving data from the client. %s (%d)\n", strerror(errno), errno);
             break;
         }
 

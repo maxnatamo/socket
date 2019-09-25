@@ -16,7 +16,7 @@ void sck_socket_initialize (sck_socket_t *sock, int listen_address, int port) {
     sock->port   = port;
 
     if(sock->error == -1) {
-        fprintf(stderr, "ERROR: Failed to initialize socket.\nError code: %s (%d)\n", strerror(errno), errno);
+        sck_log_critical("Failed to initialize socket.\nError code: %s (%d)\n", strerror(errno), errno);
         return;
     }
 
@@ -29,7 +29,7 @@ void sck_socket_bind (sck_socket_t *socket) {
     socket->error = bind(socket->fd, (struct sockaddr *) &(socket->addr), sizeof(socket->addr));
     
     if(socket->error == -1) {
-        fprintf(stderr, "ERROR: Failed to bind socket.\nError code: %s (%d)\n", strerror(errno), errno);
+        sck_log_critical("Failed to bind socket.\nError code: %s (%d)\n", strerror(errno), errno);
     }
 }
 
@@ -37,7 +37,7 @@ void sck_socket_listen (sck_socket_t *socket, int max_connections) {
     socket->error = listen(socket->fd, max_connections);
     
     if(socket->error == -1) {
-        fprintf(stderr, "ERROR: Failed to listen to address.\nError code: %s (%d)\n", strerror(errno), errno);
+        sck_log_critical("Failed to listen to address.\nError code: %s (%d)\n", strerror(errno), errno);
     }
 }
 
@@ -51,6 +51,6 @@ void sck_socket_accept (sck_socket_t *socket, sck_http_request_t *request) {
     request->address = (uint32_t)client_addr.sin_addr.s_addr;
 
     if(request->error == -1 || request->fd == -1) {
-        fprintf(stderr, "ERROR: Failed to accept connection.\nError code: %s (%d)\n", strerror(errno), errno);
+        sck_log_error("Failed to accept connection.\nError code: %s (%d)\n", strerror(errno), errno);
     }
 }

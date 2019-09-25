@@ -29,13 +29,13 @@ void sck_http_write(sck_http_request_t *request, sck_http_response_t *response) 
     );
 
     if(entirelength != len) {
-        fprintf(stderr, "ERROR: Predicted length of HTTP-response is not correct!\nPred. length: %d, actual length: %d\n\nHTTP-response:\n%s", entirelength, len, formattedstring);
+        sck_log_warning("Predicted length of HTTP-response is not correct!\nPred. length: %d, actual length: %d\n\nHTTP-response:\n%s", entirelength, len, formattedstring);
     }
 
     request->error = write(request->fd, formattedstring, entirelength);
 
     if(request->error == -1) {
-        fprintf(stderr, "ERROR: Failed to accept connection.\nError code: %s (%d)\n", strerror(request->error), request->error);
+        sck_log_error("Failed to accept connection.\nError code: %s (%d)\n", strerror(request->error), request->error);
     }
 }
 
@@ -43,7 +43,7 @@ void sck_http_close(sck_http_request_t *request) {
     request->error = close(request->fd);
 
     if(request->error == -1) {
-        fprintf(stderr, "ERROR: Failed to close connection.\nError code: %s (%d)\n", strerror(request->error), request->error);
+        sck_log_error("Failed to close connection.\nError code: %s (%d)\n", strerror(request->error), request->error);
     }
     free(request);
 }
