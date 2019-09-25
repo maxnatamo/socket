@@ -3,12 +3,6 @@
 
 #include <sck_core.h>
 
-typedef struct {
-    int length;
-    char **data;
-
-} sck_vector_char_t;
-
 struct sck_util_table_elem_s {
     char *index;
     char *value;
