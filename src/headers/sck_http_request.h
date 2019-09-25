@@ -14,6 +14,7 @@ struct sck_http_response_s {
     uint32_t            contentlength;  // Length of content.
     char                *contenttype;   // "text/html", "text/plain", etc.
     char                *content;       // Actual content. HTML, plaintext, etc.
+    sck_http_headers_t  *headers_out;
 };
 
 struct sck_http_request_s {
@@ -21,13 +22,14 @@ struct sck_http_request_s {
     int                 fd;             // File descriptor
     int                 error;          // Socket error code. Not to be confused with status code.
     uint32_t            address;        // Request address, stored in a 4-byte hexadecimal value.
+    sck_http_headers_t  *headers_in;
 };
 
 struct sck_http_request_line_s {
-    char            *method;            // GET, HEAD, POST, PUT, etc.
-    char            *requested_url;     // Requsted file, relative to root (/).
-    int             http_version_major; // HTTP 1.1, major = 1.
-    int             http_version_minor; // HTTP 1.1, minor = 1.
+    char                *method;            // GET, HEAD, POST, PUT, etc.
+    char                *requested_url;     // Requsted file, relative to root (/).
+    int                 http_version_major; // HTTP 1.1, major = 1.
+    int                 http_version_minor; // HTTP 1.1, minor = 1.
 };
 
 struct sck_http_headers_s {
