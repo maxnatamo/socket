@@ -6,9 +6,9 @@
 #define SCK_LOG_LEVEL_ERROR             0b0100 /* 0100 */
 #define SCK_LOG_LEVEL_CRITICAL          0b1000 /* 1000 */
 
-int sck_log_debug(const char * message);
-int sck_log_warning(const char * message);
-int sck_log_error(const char * message);
-int sck_log_critical(const char * message);
+int sck_log_debug    (const char *, ...);
+int sck_log_warning  (const char *, ...);
+int sck_log_error    (const char *, ...);
+int sck_log_critical (const char *, ...);
 
 #endif /* SCK_LOG_H */
