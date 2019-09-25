@@ -11,6 +11,11 @@ sck_vector_t *sck_vector_create(uint16_t pointer_size) {
     return vec;
 }
 
+void sck_vector_allocate(sck_vector_t *vec, uint16_t size) {
+    vec->size = size;
+    vec->data = realloc(vec->data, vec->size * vec->pointer_size);
+}
+
 void sck_vector_push(sck_vector_t *vec, void *element) {
     vec->size++;
     vec->data = realloc(vec->data, vec->size * vec->pointer_size);
