@@ -49,11 +49,11 @@ sck_util_table_elem_t *sck_http_header_parse_single(char *header_c) {
 
 sck_http_headers_t *sck_http_header_parse(char *raw_header) {
     sck_http_headers_t *http_headers = malloc(sizeof(sck_http_headers_t));
-    sck_vector_char_t *lines         = malloc(sizeof(sck_vector_char_t));
-    lines->length                    = sck_util_char_amount(raw_header, "\r");
-    lines->data                      = malloc(sizeof(char *) * lines->length);
+    sck_vector_t *lines              = sck_vector_create(sizeof(char **));
+    uint16_t lines_len               = sck_util_char_amount(raw_header, "\r");
     http_headers->request_line       = sck_http_header_parse_request_line(raw_header);
     http_headers->single_headers     = sck_vector_create(sizeof(sck_http_headers_t *));
+    sck_vector_allocate(lines, lines_len);
 
     int i = 0;
     char *pch, head[strlen(raw_header)];
@@ -69,7 +69,7 @@ sck_http_headers_t *sck_http_header_parse(char *raw_header) {
 
     // Starts at 1, to skip request-line.
     // Stops at len-1, to skip the CRLF.
-    for(int i = 1; i < lines->length - 1; i++) {
+    for(int i = 1; i < lines->size - 1; i++) {
         sck_vector_push(http_headers->single_headers, (void *)sck_http_header_parse_single(lines->data[i]));
     }
     return http_headers;
