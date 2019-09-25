@@ -38,5 +38,5 @@ void sck_http_handle_request (sck_http_request_t *request) {
         content[size] = d;
         size++;
     }
-    sck_http_header_parse(content);
+    request->headers_in = sck_http_header_parse(content);
 }
