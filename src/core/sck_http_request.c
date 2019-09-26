@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <sck_core.h>
 
-void sck_http_write(sck_http_request_t *request, sck_http_response_t *response) {
+int sck_http_write(sck_http_request_t *request, sck_http_response_t *response) {
     char *baseresponse = "HTTP/%d.%d %d %s\r\nContent-Length: %d\r\nContent-type: %s\r\n\r\n%s\r\n";
     unsigned int entirelength = strlen(baseresponse) - 12;
 
@@ -36,14 +36,18 @@ void sck_http_write(sck_http_request_t *request, sck_http_response_t *response) 
 
     if(request->error == -1) {
         sck_log_error("Failed to accept connection.\nError code: %s (%d)\n", strerror(request->error), request->error);
+        return SCK_ERROR;
     }
+    return SCK_OK;
 }
 
-void sck_http_close(sck_http_request_t *request) {
+int sck_http_close(sck_http_request_t *request) {
     request->error = close(request->fd);
 
     if(request->error == -1) {
         sck_log_error("Failed to close connection.\nError code: %s (%d)\n", strerror(request->error), request->error);
+        return SCK_ERROR;
     }
     free(request);
+    return SCK_OK;
 }

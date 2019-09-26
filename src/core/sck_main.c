@@ -8,20 +8,21 @@
 int main(int argc, char *argv[])
 {
     sck_socket_t *socket = malloc(sizeof(sck_socket_t));
+    int err;
 
-    sck_socket_initialize (socket, SCK_SOCKET_ADDR_ANY, 4444);
-    if(socket->error == -1) {
-        return 1;
+    err = sck_socket_initialize (socket, SCK_SOCKET_ADDR_ANY, 4444);
+    if(err != SCK_OK) {
+        return err;
     }
 
-    sck_socket_bind (socket);
-    if(socket->error == -1) {
-        return 1;
+    err = sck_socket_bind (socket);
+    if(err != SCK_OK) {
+        return err;
     }
 
-    sck_socket_listen (socket, SCK_SOCKET_MAX_CONNECTIONS);
-    if(socket->error == -1) {
-        return 1;
+    err = sck_socket_listen (socket, SCK_SOCKET_MAX_CONNECTIONS);
+    if(err != SCK_OK) {
+        return err;
     }
 
     for(;;) {
@@ -41,13 +42,13 @@ int main(int argc, char *argv[])
 
         // Send HTTP response
         sck_http_write (request, response);
-        if(request->error == -1) {
-            return 1;
+        if(err != SCK_OK) {
+            return err;
         }
 
         sck_http_close (request);
-        if(request->error == -1) {
-            return 1;
+        if(err != SCK_OK) {
+            return err;
         }
     }
     return 0;

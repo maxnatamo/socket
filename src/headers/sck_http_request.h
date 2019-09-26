@@ -38,7 +38,7 @@ struct sck_http_headers_s {
     sck_vector_t                *single_headers;
 };
 
-void sck_http_write (sck_http_request_t *request, sck_http_response_t *response);
-void sck_http_close (sck_http_request_t *request);
+int sck_http_write (sck_http_request_t *request, sck_http_response_t *response);
+int sck_http_close (sck_http_request_t *request);
 
 #endif /* SCK_HTTP_REQUEST_H */

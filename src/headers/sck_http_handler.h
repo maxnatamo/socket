@@ -3,6 +3,6 @@
 
 #include <sck_core.h>
 
-void sck_http_handle_request (sck_http_request_t *request);
+int sck_http_handle_request (sck_http_request_t *request);
 
 #endif /* SCK_HTTP_HANDLER_H */

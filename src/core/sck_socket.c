@@ -11,37 +11,43 @@
  * sck_socket_t renamed to 'sock' as, otherwise,
  * <sys/socket.h> socket function was unable to be called.
  */ 
-void sck_socket_initialize (sck_socket_t *sock, int listen_address, int port) {
+int sck_socket_initialize (sck_socket_t *sock, int listen_address, int port) {
     sock->error  = (sock->fd = socket(AF_INET, SOCK_STREAM, 0));
     sock->port   = port;
 
     if(sock->error == -1) {
         sck_log_critical("Failed to initialize socket.\nError code: %s (%d)\n", strerror(errno), errno);
-        return;
+        return SCK_ERROR;
     }
 
     sock->addr.sin_family        = AF_INET;
     sock->addr.sin_addr.s_addr   = htonl(listen_address);
     sock->addr.sin_port          = htons(port);
+
+    return SCK_OK;
 }
 
-void sck_socket_bind (sck_socket_t *socket) {
+int sck_socket_bind (sck_socket_t *socket) {
     socket->error = bind(socket->fd, (struct sockaddr *) &(socket->addr), sizeof(socket->addr));
     
     if(socket->error == -1) {
         sck_log_critical("Failed to bind socket.\nError code: %s (%d)\n", strerror(errno), errno);
+        return SCK_ERROR;
     }
+    return SCK_OK;
 }
 
-void sck_socket_listen (sck_socket_t *socket, int max_connections) {
+int sck_socket_listen (sck_socket_t *socket, int max_connections) {
     socket->error = listen(socket->fd, max_connections);
     
     if(socket->error == -1) {
         sck_log_critical("Failed to listen to address.\nError code: %s (%d)\n", strerror(errno), errno);
+        return SCK_ERROR;
     }
+    return SCK_OK;
 }
 
-void sck_socket_accept (sck_socket_t *socket, sck_http_request_t *request) {
+int sck_socket_accept (sck_socket_t *socket, sck_http_request_t *request) {
     socklen_t client_len;
     struct sockaddr_in client_addr;
 
@@ -52,5 +58,7 @@ void sck_socket_accept (sck_socket_t *socket, sck_http_request_t *request) {
 
     if(request->error == -1 || request->fd == -1) {
         sck_log_error("Failed to accept connection.\nError code: %s (%d)\n", strerror(errno), errno);
+        return SCK_ERROR;
     }
+    return SCK_OK;
 }
