@@ -7,7 +7,7 @@ MINOR = -rc1
 LIBS = -lm
 INCS = -I src/headers/
 
-TARGETS = src/core/*.c
+TARGETS = src/core/*.c src/modules/*.c
 
 .PHONY: socket
 all: socket

@@ -15,6 +15,11 @@ int main(int argc, char *argv[])
         return err;
     }
 
+    err = sck_modules_init();
+    if(err != SCK_OK) {
+        return err;
+    }
+
     err = sck_socket_bind (socket);
     if(err != SCK_OK) {
         return err;
@@ -38,6 +43,8 @@ int main(int argc, char *argv[])
         if(err != SCK_OK) {
             continue;
         }
+
+        sck_modules_handler(request, response);
 
         response->conn          = socket;
         response->contentlength = strlen(response->content);

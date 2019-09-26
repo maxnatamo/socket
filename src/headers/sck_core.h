@@ -21,6 +21,7 @@ typedef struct sck_vector_s sck_vector_t;
 #include <sck_utils.h>
 #include <sck_log.h>
 #include <sck_vector.h>
+#include <sck_module.h>
 #include <sck_config.h>
 
 #endif /* SCK_CORE_H */
