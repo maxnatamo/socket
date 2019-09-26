@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 struct sck_http_response_s {
+    sck_socket_t        *conn;          // HTTP parent connection.
     // HTTP Version numbering.
     uint8_t             httpmajor;      // HTTP/1.1, Major = 1
     uint8_t             httpminor;      // HTTP/1.1, Minor = 1

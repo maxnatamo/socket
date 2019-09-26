@@ -40,9 +40,6 @@ struct sck_socket_s {
     unsigned int        port;
     struct sockaddr_in  addr;
     int                 error;
-
-    sck_http_headers_t  *headers_in;
-    sck_http_headers_t  *headers_out;
 };
 
 #include <sck_http_request.h>

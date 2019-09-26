@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
         sck_socket_accept(socket, request);
         sck_http_handle_request(request);
 
+        response->conn         = socket;
         response->httpmajor    = 1;
         response->httpminor    = 0;
         response->statuscode   = 200;
