@@ -44,7 +44,18 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        sck_modules_handler(request, response);
+        err = sck_modules_handler(request, response);
+        if(err == SCK_MODULE_REQUEST_NOT_HANDLED) {
+            // The request hasn't been handled,
+            // and the response is therefore invalid.
+            // Writing an invalid response would result in a segfault.
+            response->content       = "<html></html>";
+            response->contenttype   = "text/html";
+            response->statuscode    = SCK_HTTP_NOT_FOUND;
+            
+            response->httpmajor     = 1;
+            response->httpminor     = 1;
+        }
 
         response->conn          = socket;
         response->contentlength = strlen(response->content);
