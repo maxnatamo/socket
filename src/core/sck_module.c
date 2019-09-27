@@ -14,8 +14,14 @@ int sck_modules_init() {
     return SCK_OK;
 }
 
-void sck_modules_handler(sck_http_request_t *request, sck_http_response_t *response) {
+int sck_modules_handler(sck_http_request_t *request, sck_http_response_t *response) {
+    int status = SCK_MODULE_REQUEST_NOT_HANDLED;
+    int ret;
     for (sck_module_handler *fn = &__start_modules_handler; fn < &__stop_modules_handler; ++fn) {
-        (*fn)(request, response);
+        ret = (*fn)(request, response);
+        if(ret == SCK_MODULE_REQUEST_HANDLED) {
+            status = ret;
+        }
     }
+    return status;
 }
