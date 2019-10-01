@@ -1,19 +1,30 @@
 CC = gcc
 NAME = socket
 
-MAJOR = 0.0.1
-MINOR = -rc1
+BUILDDIR = ./build
+SRCDIR   = ./src
 
-LIBS = -lm
-INCS = -I src/headers/
+SRCS := ${shell find ${SRCDIR} -name *.c}
+OBJS := ${SRCS:%=${BUILDDIR}/%.o}
+DEPS := ${OBJS:.o=.d}
 
-TARGETS = src/core/*.c src/modules/*.c
+INCLIBS  := -lm
+INCDIRS  := ${shell find ${SRCDIR} -type d}
+INCFLAGS := ${addprefix -I,${INCDIRS}}
 
-.PHONY: socket
-all: socket
+CFLAGS  := ${INCFLAGS} ${INCLIBS}
+LDFLAGS := ${INCLIBS}
 
-socket:
-	${CC} ${TARGETS} ${LIBS} ${INCS} -o ${NAME}
+${BUILDDIR}/${NAME}: ${OBJS}
+	${CC} ${OBJS} -o $@ ${LDFLAGS}
+
+${BUILDDIR}/%.c.o: %.c
+	mkdir -p ${dir $@}
+	${CC} ${CFLAGS} -c $< -o $@
+
+.PHONY: clean
 
 clean:
-	rm -rf ${NAME}
+	${RM} -r ${BUILDDIR}
+
+-include ${DEPS}
