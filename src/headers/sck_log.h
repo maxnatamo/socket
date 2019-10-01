@@ -7,6 +7,7 @@
 #define SCK_CALL_DECLINED              -3
 #define SCK_CALL_ABORTED               -4
 #define SCK_MEMORY_ERROR               -5
+#define SCK_FILE_NOT_FOUND             -6
 
 #define SCK_LOG_LEVEL_DEBUG             0b0001 /* 0001 */
 #define SCK_LOG_LEVEL_WARNING           0b0010 /* 0010 */

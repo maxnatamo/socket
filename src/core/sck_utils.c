@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sck_core.h>
 
 int sck_util_length_of_int(int x) {
@@ -55,4 +56,30 @@ char *sck_util_trim(char *string) {
         string = realloc(string, sizeof(char) * l);
     }
     return string;
+}
+
+char *sck_util_path_join(char *path_a, char *path_b) {
+    char *path_a_e = malloc(sizeof(char) * strlen(path_a)); // Must not have a suffixed backslash (/)
+    char *path_b_e = malloc(sizeof(char) * strlen(path_b)); // Must not have a prefixed backslash (/)
+    char *slash = malloc(sizeof(char));
+    strcpy(slash, "/");
+
+    // Remove trailing backslash of path_a, if found.
+    if(path_a[strlen(path_a) - 1] == '/') {
+        strncpy(path_a_e, path_a, strlen(path_a) - 1);
+    } else {
+        strncpy(path_a_e, path_a, strlen(path_a));
+    }
+
+    // Remove preceding backslash of path_b, if found.
+    strncpy(path_b_e, path_b, strlen(path_b));
+    if(path_b[0] == '/') {
+        path_b_e[0] = ' ';
+        strncpy(path_b_e, sck_util_trim(path_b_e), strlen(path_b) - 1);
+    }
+    return strcat(path_a_e, strcat(slash, path_b_e));
+}
+
+uint8_t sck_util_file_exists(char *path) {
+    return (access(path, R_OK) != -1) ? (uint8_t)1 : (uint8_t)0;
 }

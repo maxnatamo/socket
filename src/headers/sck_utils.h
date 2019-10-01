@@ -8,9 +8,13 @@ struct sck_util_table_elem_s {
     char *value;
 };
 
-int   sck_util_length_of_int(int x);
-char *sck_util_substring(char *string, int beginning, int end);
-int   sck_util_char_amount(char *string, char *chars);
-char *sck_util_trim(char *string);
+#define SIZE(x)    (sizeof(x)/sizeof(x[0]))
+
+int     sck_util_length_of_int(int x);
+char   *sck_util_substring(char *string, int beginning, int end);
+int     sck_util_char_amount(char *string, char *chars);
+char   *sck_util_trim(char *string);
+char   *sck_util_path_join(char *, char *);
+uint8_t sck_util_file_exists(char *);
 
 #endif /* SCK_UTILS_H */
