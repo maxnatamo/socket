@@ -28,7 +28,7 @@ struct sck_http_request_s {
 
 struct sck_http_request_line_s {
     char                *method;            // GET, HEAD, POST, PUT, etc.
-    char                *requested_url;     // Requsted file, relative to root (/).
+    char                *requested_url;     // Requsted file, relative to server root (defined in sck_config.h).
     int                 http_version_major; // HTTP 1.1, major = 1.
     int                 http_version_minor; // HTTP 1.1, minor = 1.
 };
@@ -38,7 +38,21 @@ struct sck_http_headers_s {
     sck_vector_t                *single_headers;
 };
 
+/*
+ * Write HTTP-request to socket.
+ * In case of invalid HTTP-request, SEGFAULT is possible.
+ * 
+ * Returns: SCK_OK (0) on success, negative value otherwise.
+ * See sck_log.h for error codes.
+ */
 int sck_http_write (sck_http_request_t *request, sck_http_response_t *response);
+
+/*
+ * Close HTTP-connection.
+ * 
+ * Returns: SCK_OK (0) on success, negative value otherwise.
+ * See sck_log.h for error codes.
+ */
 int sck_http_close (sck_http_request_t *request);
 
 #endif /* SCK_HTTP_REQUEST_H */
