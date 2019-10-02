@@ -26,5 +26,3 @@ ${BUILDDIR}/%.c.o: %.c
 
 clean:
 	${RM} -r ${BUILDDIR}
-
--include ${DEPS}
