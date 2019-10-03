@@ -24,7 +24,7 @@ char *sck_util_substring(char *string, int beginning, int end) {
         end = strlen(string);
     }
 
-    char *res = malloc(sizeof(char) * end - beginning);
+    char *res = calloc(end - beginning, sizeof(char));
     strncpy(res, string + beginning, end - beginning);
     return res;
 }
@@ -39,6 +39,12 @@ int sck_util_char_amount(char *string, char *chars) {
         }
     }
     return amount;
+}
+
+char *sck_util_integer_to_char_p(int num) {
+    char *str = malloc(sizeof(int));
+    sprintf(str, "%d", num);
+    return str;
 }
 
 char *sck_util_trim(char *string) {
@@ -150,11 +156,12 @@ char *sck_util_get_file_extension(char *file) {
             extension = calloc(0, sizeof(char));
         } else {
             extension = malloc((strlen(file) - (int)(pch - file) - 1) * sizeof(char));
-            strcpy(extension, sck_util_substring(file, (int)(pch - file + 1), strlen(file)));
+            strcpy(extension, sck_util_substring(file, (int)(pch - file + 1), -1));
         }
     } else {
         extension = calloc(0, sizeof(char));
     }
+    sck_log_debug("File extension of '%s' is '%s'", file, extension);
     return extension;
 }
 

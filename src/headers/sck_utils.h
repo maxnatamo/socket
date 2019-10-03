@@ -75,6 +75,13 @@ static sck_util_table_elem_t sck_file_type_assoc[] = {
 int     sck_util_length_of_int(int);
 
 /*
+ * Converts an integer to a char pointer (char *)
+ * 
+ * Returns: Char pointer, containing the input number.
+ */
+char   *sck_util_integer_to_char_p(int);
+
+/*
  * Retrieve substring from 'beginning' to 'end' of 'string'
  * Both 'beginning' and 'end' are zero-indexed.
  * 'end' can be set as -1, to get the substring from 'beginning' to the end of the string.

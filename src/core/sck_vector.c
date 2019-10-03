@@ -7,7 +7,7 @@ sck_vector_t *sck_vector_create(uint16_t pointer_size) {
 
     vec->size           = 0;
     vec->pointer_size   = pointer_size;
-    vec->data           = malloc(vec->size * pointer_size);
+    vec->data           = calloc(pointer_size, vec->size);
     return vec;
 }
 

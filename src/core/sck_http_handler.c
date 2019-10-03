@@ -9,12 +9,13 @@ int sck_http_handler_file     (sck_http_request_t *, sck_http_response_t *, sck_
 int sck_http_handler_dirindex (sck_http_request_t *, sck_http_response_t *);
 
 int sck_http_read_request (sck_http_request_t *request, sck_http_response_t *response) {
-    uint16_t increment = 32;
-    uint16_t total = increment;
+    uint32_t increment = 64;
+    uint32_t total = increment;
+    uint16_t size = 0;
 
     char a='\0',b='\0',c='\0',d='\0';
     char *content = calloc(total, sizeof(char));
-    int n, size = 0;
+    int n;
 
     while(1) {
         a = b;
@@ -83,46 +84,55 @@ int sck_http_handle_request (sck_http_request_t *request, sck_http_response_t *r
 }
 
 int sck_http_handler_file(sck_http_request_t *request, sck_http_response_t *response, sck_string_t *file) {
-    uint16_t increment = 64;
-    uint16_t total = increment;
-    char *content = malloc(sizeof(char) * total);
-    int size = 0;
+    char *content;
+    size_t size = 0;
+    size_t res  = 0;
 
     FILE *f = fopen(file->data, "rb");
     if(f == NULL) {
         sck_log_error("Could not open file '%s,' %s (%d)", file->data, strerror(errno), errno);
 
-        response->content     = "<h1>Error</h1>";
-        response->contenttype = sck_util_get_content_type("html");
-        response->statuscode  = SCK_HTTP_BAD_REQUEST;
-        response->httpmajor   = 1;
-        response->httpminor   = 1;
+        response->content       = "<h1>Error - File not found</h1>";
+        response->contenttype   = sck_util_get_content_type("html");
+        response->contentlength = strlen(response->content);
+        response->statuscode    = SCK_HTTP_NOT_FOUND;
+        response->httpmajor     = 1;
+        response->httpminor     = 1;
 
         return SCK_INVALID_PARAMETERS;
     }
 
-    char c = '\0';
-    while(!feof(f)) {
-        if(size >= total) {
-            total += increment;
-            content = realloc(content, sizeof(char) * total);
-        }
-        c = fgetc(f);
+    fseek(f, 0, SEEK_END);
+    size = ftell(f);
+    rewind(f);
 
-        // Ignore ASCII control characters.
-        if(c <= 31 || c == 127) {
-            continue;
-        }
-        content[size] = c;
-        size++;
+    content = malloc(size * sizeof(char));
+    res = fread(content, 1, size, f);
+
+    if(res != size) {
+        sck_log_error("Error reading file '%s'", file->data);
+
+        response->content     = "<h1>Error reading file</h1>";
+        response->contenttype = sck_util_get_content_type("html");
+        response->statuscode  = SCK_HTTP_INTERNAL_ERROR;
+        response->httpmajor   = 1;
+        response->httpminor   = 1;
+
+        return SCK_MEMORY_ERROR;
     }
+    printf("Image size: %ld\n", size);
+    for(int i = 0; i < 64; i++) {
+        printf("%d ", content[i]);
+    }
+    printf("\n");
     fclose(f);
     
-    response->content     = content;
-    response->contenttype = sck_util_get_content_type(file->data);
-    response->statuscode  = SCK_HTTP_OK;
-    response->httpmajor   = 1;
-    response->httpminor   = 1;
+    response->content       = content;
+    response->contentlength = size;
+    response->contenttype   = sck_util_get_content_type(file->data);
+    response->statuscode    = SCK_HTTP_OK;
+    response->httpmajor     = 1;
+    response->httpminor     = 1;
 
     return SCK_OK;
 }
@@ -140,17 +150,22 @@ int sck_http_handler_dirindex(sck_http_request_t *request, sck_http_response_t *
     sck_string_append(html, "<!DOCTYPE html><html><body>");
 
     for(int i = 0; i < vec->size; i++) {
-        sck_string_append(html, "<p>");
-        sck_string_append(html, (char *) sck_vector_get(vec, i));
-        sck_string_append(html, "</p>");
+        char *elem = (char *) sck_vector_get(vec, i);
+        printf("elem: %s\n", elem);
+        sck_string_append(html, "<p><a href='");
+        sck_string_append(html, elem);
+        sck_string_append(html, "'>");
+        sck_string_append(html, elem);
+        sck_string_append(html, "</a></p>");
     }
     sck_string_append(html, "</body></html>");
 
-    response->content     = html->data;
-    response->httpmajor   = 1;
-    response->httpminor   = 1;
-    response->contenttype = "text/html";
-    response->statuscode  = SCK_HTTP_OK;
+    response->content       = html->data;
+    response->contentlength = strlen(response->content);
+    response->httpmajor     = 1;
+    response->httpminor     = 1;
+    response->contenttype   = "text/html";
+    response->statuscode    = SCK_HTTP_OK;
 
     return SCK_OK;
 }

@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     for(;;) {
         sck_http_request_t *request   = malloc(sizeof(sck_http_request_t));
         sck_http_response_t *response = malloc(sizeof(sck_http_response_t));
+        response->conn          = socket;
 
         err = sck_socket_accept(socket, request);
         if(err != SCK_OK) {
@@ -54,9 +55,6 @@ int main(int argc, char *argv[])
             continue;
         }
         sck_modules_handler(request, response);
-
-        response->conn          = socket;
-        response->contentlength = strlen(response->content);
 
         err = sck_http_write (request, response);
         if(err != SCK_OK) {

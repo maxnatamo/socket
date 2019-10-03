@@ -7,33 +7,26 @@
 
 // TODO: Refactor this disaster
 int sck_http_write(sck_http_request_t *request, sck_http_response_t *response) {
-    char *baseresponse = "HTTP/%d.%d %d %s\r\nContent-Length: %d\r\nContent-type: %s\r\n\r\n%s\r\n";
-    unsigned int entirelength = strlen(baseresponse) - 12;
+    sck_string_t *resp_content = sck_string_create();
 
-    entirelength += sck_util_length_of_int(response->httpmajor);
-    entirelength += sck_util_length_of_int(response->httpminor);
-    entirelength += sck_util_length_of_int(response->statuscode);
-    entirelength += sck_util_length_of_int(response->contentlength);
-    entirelength += strlen(response->contenttype);
-    entirelength += strlen(response->content);
+    sck_string_append(resp_content, "HTTP/");
+    sck_string_append(resp_content, sck_util_integer_to_char_p(response->httpmajor));
+    sck_string_append(resp_content, ".");
+    sck_string_append(resp_content, sck_util_integer_to_char_p(response->httpminor));
+    sck_string_append(resp_content, " ");
+    sck_string_append(resp_content, sck_util_integer_to_char_p((int)(response->statuscode)));
+    sck_string_append(resp_content, " ");
+    sck_string_append(resp_content, "OK\r\n");
+    sck_string_append(resp_content, "Content-Length: ");
+    sck_string_append(resp_content, sck_util_integer_to_char_p(response->contentlength));
+    sck_string_append(resp_content, "\r\n");
+    sck_string_append(resp_content, "Content-Type: ");
+    sck_string_append(resp_content, response->contenttype);
+    sck_string_append(resp_content, "\r\n\r\n");
+    sck_string_append(resp_content, response->content);
+    sck_string_append(resp_content, "\r\n");
 
-    char *formattedstring = malloc(sizeof(char) * entirelength);
-    int len = sprintf(
-        formattedstring, baseresponse,
-        response->httpmajor,
-        response->httpminor,
-        response->statuscode,
-        "OK",
-        response->contentlength,
-        response->contenttype,
-        response->content
-    );
-
-    if(entirelength != len) {
-        sck_log_warning("Predicted length of HTTP-response is not correct!\nPred. length: %d, actual length: %d\n\nHTTP-response:\n%s", entirelength, len, formattedstring);
-    }
-
-    request->error = write(request->fd, formattedstring, entirelength);
+    request->error = write(request->fd, resp_content->data, resp_content->length);
 
     if(request->error == -1) {
         sck_log_error("Failed to accept connection.\nError code: %s (%d)\n", strerror(request->error), request->error);
